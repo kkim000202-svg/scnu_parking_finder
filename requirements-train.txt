@@ -1,0 +1,5 @@
+# AI 학습·정확도 측정·ONNX 변환용 (개발 컴퓨터에서만)
+-r requirements.txt
+ultralytics
+onnx
+onnxslim

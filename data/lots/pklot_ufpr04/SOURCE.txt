@@ -1,0 +1,1 @@
+PKLot dataset (UFPR04) — Almeida, P. R. L. et al., "PKLot – A robust dataset for parking lot classification", Expert Systems with Applications, 2015. License: CC BY 4.0

@@ -1,0 +1,8 @@
+{
+ "task": "classify",
+ "imgsz": 64,
+ "names": {
+  "0": "empty",
+  "1": "occupied"
+ }
+}

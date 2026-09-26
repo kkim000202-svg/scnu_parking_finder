@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>빈자리 주차 내비</title>
+<link rel="stylesheet" href="/static/style.css?v=11">
+</head>
+<body>
+<div id="map"></div>
+
+<!-- 키가 없을 때 안내 -->
+<div id="nokey" hidden>
+  <div class="nokey-card">
+    <h1>지도를 불러오지 못했어요</h1>
+    <p>잠시 후 다시 시도해 주세요.</p>
+    <p class="muted">운영자 안내: 서버 환경변수 KAKAO_JS_KEY 와 카카오 개발자 콘솔의 JavaScript SDK 도메인 등록을 확인하세요.</p>
+    <pre hidden></pre>
+  </div>
+</div>
+
+<!-- 검색창 -->
+<header id="search">
+  <div class="brand"><span class="p">P</span>빈자리 주차 내비 <span class="brand-sub">AI 빈칸 안내</span><a id="source-link" class="brand-src" href="__SOURCE_URL__" target="_blank" rel="noopener">소스 코드</a></div>
+  <div class="field">
+    <span class="dot start"></span>
+    <input id="origin" placeholder="출발지 (비우면 내 위치)" autocomplete="off">
+    <button id="use-gps" class="icon" title="내 위치를 출발지로" aria-label="내 위치를 출발지로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+  </div>
+  <div class="field">
+    <span class="dot end"></span>
+    <input id="dest" placeholder="어디로 갈까요?" autocomplete="off">
+    <button id="swap" class="icon" title="출발지와 목적지 바꾸기" aria-label="출발지와 목적지 바꾸기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg></button>
+  </div>
+  <ul id="suggest" hidden></ul>
+</header>
+
+<!-- 진행 중 안내 배너 (모의 주행) -->
+<div id="banner" hidden>
+  <button id="banner-stop" class="banner-stop" title="안내 종료" aria-label="안내 종료">✕</button>
+  <div id="banner-dist"></div>
+  <div id="banner-text"></div>
+</div>
+
+<!-- 아래 패널 -->
+<section id="sheet">
+  <button class="grip-btn" id="grip" aria-label="패널 접기/펼치기"><span class="grip"></span></button>
+  <div id="sheet-body">
+    <div class="hint">
+      <b>어디로 갈까요?</b>
+      <p class="muted">목적지를 검색하면 주변 주차장이 지도에 나와요. AI 카메라가 있는 주차장은 <span class="badge ai">빈칸 수</span>까지 보여요.</p>
+      <div class="row quick"><button class="btn primary" id="quick-lot">AI 주차장 바로 보기</button><button class="btn ghost" id="quick-gps">내 위치에서 출발</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 주차장 도면: 입구 → 빈칸 안내 -->
+<section id="plan" hidden>
+  <div class="plan-top">
+    <div id="plan-dist" class="plan-dist"></div>
+    <div id="plan-text" class="plan-text"></div>
+    <div id="plan-meta" class="plan-meta"></div>
+  </div>
+  <div class="plan-stage"><svg id="plan-svg" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="plan-bottom">
+    <div class="plan-legend"><span class="lg empty"></span>빈칸 <span class="lg best"></span>추천 칸 <span class="lg route"></span>남은 길
+      <label class="switch" title="주차된 칸도 빨갛게 표시"><input type="checkbox" id="show-occ"><span class="knob"></span>주차된 칸</label></div>
+    <div class="row plan-actions">
+      <div class="seg" role="tablist">
+        <button id="view-cctv" class="on">CCTV</button><button id="view-plan">도면</button>
+      </div>
+      <button class="btn ghost" id="plan-replay">다시 보기</button>
+      <button class="btn primary" id="plan-close">지도로 돌아가기</button>
+    </div>
+  </div>
+</section>
+
+<div id="toast" hidden></div>
+
+<script>
+  window.KAKAO_JS_KEY = "__KAKAO_JS_KEY__";
+</script>
+<script src="/static/app.js?v=18"></script>
+</body>
+</html>

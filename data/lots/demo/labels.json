@@ -1,0 +1,72 @@
+{
+  "sample_1.jpg": {
+    "1": true,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": false
+  },
+  "sample_2.jpg": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": true
+  },
+  "sample_3.jpg": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true
+  },
+  "sample_4.jpg": {
+    "1": true,
+    "2": true,
+    "3": true,
+    "4": true,
+    "5": true,
+    "6": true,
+    "7": false,
+    "8": true
+  },
+  "sample_5_bright.jpg": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "sample_6_dark.jpg": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": true
+  },
+  "sample_7_warm.jpg": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false
+  }
+}

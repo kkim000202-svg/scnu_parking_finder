@@ -1,0 +1,13 @@
+# 앱 실행용 (PyTorch 없이 ONNX Runtime으로 AI 실행)
+streamlit>=1.40
+folium
+streamlit-folium
+streamlit-image-coordinates
+opencv-python-headless
+numpy
+pillow
+onnxruntime
+fastapi
+uvicorn
+python-dotenv
+httpx

@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+runs/
+data/benchmark/
+log.txt
+
+# 비밀키 (서버·PC에만)
+.env
+
+# 학습 원본 모델: 개발 PC 경로가 들어 있어 제외 (앱은 models/*.onnx 만 씀, train_classifier.py 로 다시 만들 수 있음)
+models/*.pt
+
+# 교내 CCTV 화면 (사람·차량이 찍혀 있어 공개 저장소에 올리지 않음, 배포 서버에만)
+data/lots/cctv_*/frames/
+data/lots/cctv_*/empty.jpg
+data/lots/cctv_*/videos/
+
+# 팀이 직접 찍은 주차장 사진 (차량·번호판이 찍혀 있음)
+data/lots/my_lot/
