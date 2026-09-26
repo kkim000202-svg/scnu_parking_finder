@@ -269,6 +269,7 @@ async function startDemo() {
     }
     w.__demoS = 0;
     w.startSim();
+    w.document.getElementById("sheet")?.classList.add("collapsed");   // 주행 중엔 패널을 내려 지도를 크게
     setStep(2);
     await waitFor(() => { const d = appState("state.drive"); return d && d.total - (w.__demoS || 0) < 300; }, 60000, run);
     if (run !== demoRun) return;

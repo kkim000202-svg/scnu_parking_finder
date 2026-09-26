@@ -81,6 +81,22 @@ function clear(kind) {
 }
 
 // 지도를 target으로 옮기되, 아래 패널(폰)이나 왼쪽 패널(데스크톱)에 가리지 않는 자리로
+// 주행 중: 내 차를 위 안내 배너와 아래 패널 사이, 실제로 보이는 지도 한가운데에 둔다
+function centerVisible(lat, lng) {
+  const map = state.map, proj = map.getProjection();
+  map.setCenter(LL(lat, lng));
+  const pt = proj.containerPointFromCoords(LL(lat, lng));
+  let dx = 0, dy = 0;
+  if (window.innerWidth < 900) {
+    const banner = $("banner"), top = banner.hidden ? 0 : banner.getBoundingClientRect().bottom;
+    const bottom = $("sheet").getBoundingClientRect().top;
+    dy = Math.round(window.innerHeight / 2 - (top + bottom) / 2);
+  } else {
+    dx = -Math.round(($("sheet").getBoundingClientRect().right + 12) / 2);
+  }
+  if (dx || dy) map.setCenter(proj.coordsFromContainerPoint(new kakao.maps.Point(pt.x + dx, pt.y + dy)));
+}
+
 function focusMap(lat, lng) {
   const sheet = $("sheet");
   sheet.classList.remove("collapsed");
@@ -487,7 +503,7 @@ function progress(s, posOverride) {
   const p = d.path;
   const pos = posOverride || [p[i - 1][0] + (p[i][0] - p[i - 1][0]) * k, p[i - 1][1] + (p[i][1] - p[i - 1][1]) * k];
   state.car.setPosition(LL(...pos));
-  state.map.setCenter(LL(...pos));
+  centerVisible(...pos);
   if (state.routeLine) state.routeLine.setPath([LL(...pos), ...p.slice(i).map((q) => LL(...q))]); // 지나간 길은 지운다
   const nextIdx = d.guides.findIndex((g) => g.at >= i);
   const next = nextIdx >= 0 ? d.guides[nextIdx] : null;
