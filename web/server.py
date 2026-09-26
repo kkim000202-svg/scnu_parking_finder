@@ -103,12 +103,15 @@ def index():
 
 # ---------- 카카오 API 중계 (REST 키를 브라우저에 노출하지 않기 위해) ----------
 
+_http = httpx.Client(timeout=10)  # 카카오와의 연결을 재사용 (요청마다 새로 연결하면 작은 무료 서버 CPU가 바빠진다)
+
+
 def _kakao(url, params):
     load_keys()
     if not REST_KEY:
         raise HTTPException(503, "카카오 REST API 키가 없어요. .env 파일에 KAKAO_REST_KEY를 넣어 주세요.")
     try:
-        r = httpx.get(url, params=params, headers={"Authorization": f"KakaoAK {REST_KEY}"}, timeout=10)
+        r = _http.get(url, params=params, headers={"Authorization": f"KakaoAK {REST_KEY}"})
     except httpx.HTTPError as exc:
         raise HTTPException(502, f"카카오 서버에 연결하지 못했어요 ({exc.__class__.__name__}).")
     if r.status_code == 401:
@@ -166,8 +169,7 @@ def parking(x: float, y: float, radius: int = Query(1000, ge=100, le=5000), ours
         p["live"] and _distance_m(o["lat"], o["lng"], p["lat"], p["lng"]) < 40 for p in ours)]
     others = []
     if REST_KEY and not ours_only:
-        data = _kakao("https://dapi.kakao.com/v2/local/search/category.json",
-                      {"category_group_code": "PK6", "x": x, "y": y, "radius": radius, "sort": "distance", "size": 15})
+        data = _nearby_parking(x, y, radius)
         for d in data.get("documents", []):
             lat, lng = float(d["y"]), float(d["x"])
             if any(_distance_m(lat, lng, o["lat"], o["lng"]) < 40 for o in ours):
@@ -176,6 +178,24 @@ def parking(x: float, y: float, radius: int = Query(1000, ge=100, le=5000), ours
                            "address": d.get("road_address_name") or d.get("address_name"),
                            "distance": int(d.get("distance") or 0), "url": d.get("place_url") if str(d.get("place_url") or "").startswith(("https://", "http://")) else None})
     return {"ours": ours, "others": others}
+
+
+_pk_cache = {}  # (x, y 약 100m 단위, 반경) → (시각, 카카오 결과)
+PK_CACHE_SECONDS = 300  # 주차장 위치는 자주 바뀌지 않으니 5분 동안 다시 쓴다
+
+
+def _nearby_parking(x, y, radius):
+    """카카오 주차장(PK6) 검색. 같은 동네를 여러 사람이 보면 한 번만 물어본다."""
+    key = (round(x, 3), round(y, 3), radius)
+    hit = _pk_cache.get(key)
+    if hit and time.time() - hit[0] < PK_CACHE_SECONDS:
+        return hit[1]
+    data = _kakao("https://dapi.kakao.com/v2/local/search/category.json",
+                  {"category_group_code": "PK6", "x": key[0], "y": key[1], "radius": radius, "sort": "distance", "size": 15})
+    if len(_pk_cache) > 500:
+        _pk_cache.clear()
+    _pk_cache[key] = (time.time(), data)
+    return data
 
 
 def _distance_m(lat1, lng1, lat2, lng2):
