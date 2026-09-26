@@ -356,6 +356,11 @@ async function playLots() {
 // 서버를 미리 깨우고 주차장 사진을 받아 둔다
 ["cctv_a1", "cctv_d4", "cctv_b7"].forEach((id) => loadLot(id).catch(() => { delete lots[id]; }));
 go(0);
+// 주소 끝이 #demo 이면 (구글 슬라이드의 "시연" 링크) 앱이 뜨자마자 바로 시연 시작
+if (location.hash === "#demo") {
+  const startWhenReady = () => (app()?.setDest ? setTimeout(() => go(1), 1500) : setTimeout(startWhenReady, 300));
+  startWhenReady();
+}
 </script>
 </body>
 </html>
