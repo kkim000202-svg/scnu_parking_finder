@@ -49,7 +49,7 @@ Windows는 `run_windows.bat`, Mac은 `run_mac.command`를 더블클릭하면 처
 | `KAKAO_JS_KEY` | 카카오 JavaScript 키 (브라우저 지도용) |
 | `KAKAO_REST_KEY` | 카카오 REST API 키 (서버 전용, 검색·길찾기) |
 | `SOURCE_URL` | (선택) 공개 소스 저장소 주소 `https://...` — 화면에 "소스 코드" 링크로 표시 (AGPL) |
-| `RATE_LIMIT_PER_MIN` | (선택) IP당 1분 카카오 API 호출 한도, 기본 60 |
+| `RATE_LIMIT_PER_MIN` | (선택) IP당 1분 카카오 API 호출 한도, 기본 120 |
 | `CCTV_TOKEN` | 실시간 중계용 비밀 문자열. 영문·숫자로 길고 무작위로 (예: `python -c "import secrets;print(secrets.token_urlsafe(32))"`). 비워 두면 실시간 수신이 꺼짐 |
 
 3. 카카오 개발자 콘솔 → 앱 → 플랫폼 키 → JavaScript 키 → **JavaScript SDK 도메인에 배포 주소**(`https://...`)를 추가합니다.

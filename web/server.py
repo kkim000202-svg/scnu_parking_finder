@@ -66,7 +66,7 @@ def health():
     return {"ok": True}
 
 # 카카오 API를 부르는 주소는 한 사람(IP)이 1분에 RATE_LIMIT번까지만 (무료 쿼터를 남이 다 써 버리지 않게)
-RATE_LIMIT = int(os.environ.get("RATE_LIMIT_PER_MIN", "60"))
+RATE_LIMIT = int(os.environ.get("RATE_LIMIT_PER_MIN", "120"))  # 발표장처럼 여럿이 같은 와이파이(IP)로 들어와도 버티게
 _hits = {}  # IP → 최근 1분 호출 시각들
 _LIMITED = ("/api/search", "/api/route", "/api/parking")
 
