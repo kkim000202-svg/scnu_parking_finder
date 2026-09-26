@@ -134,10 +134,41 @@ function boot() {
   document.head.appendChild(s);
 }
 
+// 아래 패널: 손잡이를 끌어내리면 접히고, 끌어올리면 펼쳐진다 (짧게 누르면 전환)
+function bindSheetDrag() {
+  const sheet = $("sheet"), grip = $("grip");
+  let startY = null, dy = 0, moved = false;
+  grip.addEventListener("pointerdown", (e) => {
+    startY = e.clientY; dy = 0; moved = false;
+    grip.setPointerCapture(e.pointerId);
+    sheet.style.transition = "none";
+  });
+  grip.addEventListener("pointermove", (e) => {
+    if (startY === null) return;
+    dy = e.clientY - startY;
+    if (Math.abs(dy) > 6) moved = true;
+    const collapsed = sheet.classList.contains("collapsed");
+    // 접힌 상태에서는 위로만, 펼친 상태에서는 아래로만 따라 움직인다
+    const shift = collapsed ? Math.min(0, dy) : Math.max(0, dy);
+    sheet.style.transform = `translateY(${shift}px)`;
+  });
+  const end = () => {
+    if (startY === null) return;
+    startY = null;
+    sheet.style.transition = "";
+    sheet.style.transform = "";
+    if (!moved) sheet.classList.toggle("collapsed");
+    else if (dy > 30) sheet.classList.add("collapsed");
+    else if (dy < -30) sheet.classList.remove("collapsed");
+  };
+  grip.addEventListener("pointerup", end);
+  grip.addEventListener("pointercancel", end);
+}
+
 function start() {
   state.map = new kakao.maps.Map($("map"), { center: LL(...DEFAULT_CENTER), level: 4 });
   if (window.innerWidth >= 900) state.map.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT); // 폰은 손가락 확대
-  $("grip").addEventListener("click", () => $("sheet").classList.toggle("collapsed"));
+  bindSheetDrag();
   $("quick-lot")?.addEventListener("click", () => {
     const p = state.parking?.ours?.[0];
     p ? showLot(p.id) : toast("근처에 AI 주차장이 없어요.");
