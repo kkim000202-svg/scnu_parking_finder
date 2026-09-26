@@ -17,6 +17,8 @@ import time
 from pathlib import Path
 
 import cv2
+
+cv2.setNumThreads(1)  # 무료 서버(메모리 512MB): OpenCV 작업 스레드를 줄여 메모리 절약
 import httpx
 from dotenv import load_dotenv
 import numpy as np
@@ -282,7 +284,16 @@ def _pick_entrance(lot, result, frame, approach):
     return {**result, "entrance": px, "routes": routes, "recommended": best}, ent["id"]
 
 
+_heavy = threading.BoundedSemaphore(2)  # AI 판정·사진 만들기는 동시에 2개까지만 (메모리 한도 보호)
+_img_cache = {}  # (lot_id, 판정 시각, 입구) → 이미 만든 사진들
+
+
 def lot_summary(lot_id, with_image=False, fresh=False, approach=None):
+    with _heavy:
+        return _lot_summary(lot_id, with_image, fresh, approach)
+
+
+def _lot_summary(lot_id, with_image=False, fresh=False, approach=None):
     lot = load_lot(lot_id)
     latlng = lot.entrance_latlng
     is_live = bool(lot.live)
@@ -321,7 +332,10 @@ def lot_summary(lot_id, with_image=False, fresh=False, approach=None):
         "camera_shift": round(result.get("camera_shift", 0)), "updated": int(cached[0]),
         "live": is_live, "entrance_id": entrance_id,
     }
-    if with_image:
+    key = (lot_id, cached[0], summary.get("entrance_id"))
+    if with_image and key in _img_cache:
+        summary.update(_img_cache[key])
+    elif with_image:
         img = draw(frame, result, show_boxes=False, light=True)
         h, w = img.shape[:2]
         img = cv2.resize(img, (900, int(h * 900 / w)))
@@ -332,6 +346,8 @@ def lot_summary(lot_id, with_image=False, fresh=False, approach=None):
         raw = cv2.resize(blur_plates(frame.copy(), result.get("plates", [])), (1000, int(h * 1000 / w)))
         ok, buf = cv2.imencode(".jpg", raw, [cv2.IMWRITE_JPEG_QUALITY, 80])
         summary["photo"] = "data:image/jpeg;base64," + base64.b64encode(buf).decode()
+        _img_cache.clear() if len(_img_cache) > 12 else None
+        _img_cache[key] = {k: summary[k] for k in ("image", "plan", "photo")}
     return summary
 
 

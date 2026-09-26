@@ -656,7 +656,7 @@
  ],
  "pixel_threshold": 40,
  "changed_ratio": 0.25,
- "auto_align": true,
+ "auto_align": false,
  "entrance_latlng": [
   34.96994,
   127.48299
