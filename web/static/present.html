@@ -116,8 +116,8 @@ body.notes #notes { display:block; }
   </section>
 
   <!-- 1. 시연 -->
-  <section class="scene" data-note="시청에서 학교에 오는 방문객이라고 해 보겠습니다. 목적지로 공대 3호관 뒤 주차장을 고르면, 지도에 AI가 본 빈자리 수가 나옵니다. 길 안내는 카카오맵 그대로입니다. 주차장 10미터 전에 CCTV를 한 번 더 보고, 도착하면 입구에서 가장 가까운 빈 칸까지 노란 길을 그려 줍니다. (도면 버튼을 눌러 도면도 보여 줄 수 있음)">
-    <div class="route-info" id="route-info">순천시청 → <b>공대 3호관 뒤 주차장</b></div>
+  <section class="scene" data-note="문화예술회관에서 학교로 오는 방문객이라고 해 보겠습니다. 목적지로 박물관 뒤 주차장을 고르면, 지도에 AI가 본 빈자리 수가 나옵니다. 길 안내는 카카오맵 그대로입니다. 주차장 10미터 전에 CCTV를 한 번 더 보고, 도착하면 입구에서 가장 가까운 빈 칸까지 노란 길을 그려 줍니다. (도면 버튼을 눌러 도면도 보여 줄 수 있음)">
+    <div class="route-info" id="route-info">순천문화예술회관 → <b>국립순천대학교 주차장 (박물관 뒤)</b></div>
     <div class="steps">
       <div class="step" data-step="1"><div class="n">1</div><div><b>목적지를 고르면</b><span>주차장마다 AI가 센 빈자리 수가 보여요</span></div></div>
       <div class="step" data-step="2"><div class="n">2</div><div><b>가는 길은 평소처럼</b><span>카카오맵 길 안내 그대로 · 지금은 모의 주행</span></div></div>
@@ -179,8 +179,8 @@ body.notes #notes { display:block; }
 </div>
 
 <script>
-const ORIGIN = { name: "순천시청", lat: 34.9506, lng: 127.4872 };
-const DEMO_LOT = "cctv_d4";
+const ORIGIN = { name: "순천문화예술회관", lat: 34.9705314628275, lng: 127.485275810333 };
+const DEMO_LOT = "cctv_b7";
 const scenes = [...document.querySelectorAll(".scene")];
 let cur = 0, demoRun = 0;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
