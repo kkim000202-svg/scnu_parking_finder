@@ -89,6 +89,15 @@ async def rate_limit(request, call_next):
     return await call_next(request)
 
 
+@app.middleware("http")
+async def no_cache_pages(request, call_next):
+    """화면(HTML)은 브라우저가 옛날 것을 들고 있지 않게 매번 새 버전인지 확인하게 한다."""
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.endswith(".html"):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 # ---------- 화면 ----------
 
 @app.get("/", response_class=HTMLResponse)
